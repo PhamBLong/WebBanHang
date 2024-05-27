@@ -1,0 +1,98 @@
+﻿@model PagedList.PagedList<WebBanHang.Models.EF.Wishlist>
+
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Trang yêu thích";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/assets/styles/main_styles.css">
+<style>
+    .news_section_container {
+        margin-top: 180px;
+    }
+
+    .row-item-news {
+        margin-bottom: 20px;
+    }
+
+    .title-news {
+        font-size: 24px;
+        border-bottom: 1px solid;
+        padding: 15px 0;
+        margin-bottom: 25px;
+    }
+
+    .img-box img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+</style>
+
+<div class="container news_section_container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="title-news"> Sản phẩm yêu thích</h1>
+        </div>
+    </div>
+    @if (Model != null && Model.Any())
+    {
+
+        foreach (var item in Model)
+        {
+            <div class="row row-item-news">
+                <div class="col-md-3">
+                    <div class="img-box">
+                        <a href="" title="@item.SanPham.tensanpham"><img src="@item.SanPham.hinhanh" alt="@item.SanPham.tensanpham" /></a>
+                    </div>
+
+                </div>
+                <div class="col-md-8">
+                    <div class="content-box">
+                        <h3><a href="/@item.SanPham.alias-n@(item.ProductId)" title="@item.SanPham.tensanpham">@item.SanPham.tensanpham</a></h3>
+                        @*<div class="description-box">
+                              @item.mota
+                        </div>*@
+                    </div>
+
+                </div>
+                <div class="col-md-1">
+                    <a href="#" data-id="@item.Id" class="btn btn-danger btnDelete">Xóa</a>
+                </div>
+            </div>
+
+        }
+        <div class="row">
+            <div class="col-6" style="text-align:right;">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+            </div>
+        </div>
+
+    }
+
+
+
+</div>
+
+@section scripts {
+    <script>
+        $('body').on('click', '.btnDelete', function (event) {
+            event.preventDefault(); // Ngăn chặn hành động mặc định của thẻ a
+            var id = $(this).data("id");
+            var conf = confirm('Bạn có muốn xóa?');
+            if (conf == true) {
+                $.ajax({
+                    url: '/wishlist/delete',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (rs) {
+                        if (rs.success) {
+                            $(id).remove();
+                        }
+                    }
+                });
+            }
+        });
+
+    </script>
+    
+    }
